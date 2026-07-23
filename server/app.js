@@ -14,12 +14,7 @@ const logger = require("./src/utils/logger");
 const app = express();
 
 // cors
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  }),
-);
+app.use(cors());
 
 // security
 app.use(helmet());
@@ -57,6 +52,10 @@ app.get("/api/health", (req, res) => {
     message: "Server is healthy",
   });
 });
+
+// routes
+const bikeRoutes = require("./src/routes/bikes.routes");
+app.use("/api/v1/bikes", bikeRoutes);
 
 // global error handler
 const errorHandler = require("./src/middlewares/errorHandler.middleware");

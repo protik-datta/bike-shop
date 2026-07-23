@@ -35,4 +35,4 @@ const logger = winston.createLogger({
   ],
 });
 
-module.exports = Logger;
+module.exports = logger;
