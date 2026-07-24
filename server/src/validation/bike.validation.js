@@ -1,34 +1,40 @@
 const { z } = require("zod");
 
+const boolString = z
+  .union([z.boolean(), z.string()])
+  .transform((val) => (typeof val === "string" ? val === "true" : val));
+
 const createBikeSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters"),
   brand: z.string().trim().min(1, "Brand is required"),
   category: z.string().trim().min(1, "Category is required"),
-  price: z.number().positive("Price must be a positive number"),
-  offerPrice: z.number().positive().optional(),
-  downPayment: z.number().nonnegative().optional(),
-  cashbackOffer: z.number().nonnegative().optional(),
-  emiPerMonth: z.number().nonnegative().optional(),
+  price: z.coerce.number().positive("Price must be a positive number"),
+  offerPrice: z.coerce.number().positive().optional(),
+  downPayment: z.coerce.number().nonnegative().optional(),
+  cashbackOffer: z.coerce.number().nonnegative().optional(),
+  emiPerMonth: z.coerce.number().nonnegative().optional(),
   emiDuration: z.string().trim().optional(),
   interestRate: z.string().trim().optional(),
-  thumbnail: z.string().url("Thumbnail must be a valid URL"),
+
+  thumbnail: z.string().url("Thumbnail must be a valid URL").optional(),
+
   images: z.array(z.string().url()).optional(),
   imagesPublicIds: z.array(z.string()).optional(),
   description: z
     .string()
     .trim()
     .min(10, "Description must be at least 10 characters"),
-  engineCC: z.number().positive().optional(),
+  engineCC: z.coerce.number().positive().optional(),
   mileage: z.string().trim().optional(),
   brakeType: z.string().trim().optional(),
-  stock: z.number().int().nonnegative().optional(),
-  isSale: z.boolean().optional(),
-  isNewArrival: z.boolean().optional(),
-  isFeatured: z.boolean().optional(),
-  isTopSelling: z.boolean().optional(),
-  isHotDeal: z.boolean().optional(),
-  isPopular: z.boolean().optional(),
-  isActive: z.boolean().optional(),
+  stock: z.coerce.number().int().nonnegative().optional(),
+  isSale: boolString.optional(),
+  isNewArrival: boolString.optional(),
+  isFeatured: boolString.optional(),
+  isTopSelling: boolString.optional(),
+  isHotDeal: boolString.optional(),
+  isPopular: boolString.optional(),
+  isActive: boolString.optional(),
 });
 
 const updateBikeSchema = createBikeSchema.partial();

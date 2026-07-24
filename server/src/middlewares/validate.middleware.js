@@ -6,9 +6,13 @@ const validate =
     const result = schema.safeParse(req[source]);
 
     if (!result.success) {
-      const messages = result.error.errors
-        .map((e) => `${e.path.join(".")}: ${e.message}`)
-        .join(", ");
+      const issues = result.error?.issues || result.error?.errors || [];
+
+      const messages =
+        issues.length > 0
+          ? issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ")
+          : "Validation failed";
+
       return next(new AppError(400, messages));
     }
 

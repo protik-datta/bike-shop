@@ -56,6 +56,8 @@ app.get("/api/health", (req, res) => {
 // routes
 const bikeRoutes = require("./src/routes/bikes.routes");
 app.use("/api/v1/bikes", bikeRoutes);
+const categoryRoutes = require("./src/routes/category.routes");
+app.use("/api/v1/categories", categoryRoutes);
 
 // global error handler
 const errorHandler = require("./src/middlewares/errorHandler.middleware");

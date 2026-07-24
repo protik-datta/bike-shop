@@ -38,11 +38,20 @@ const bikeSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-bikeSchema.pre("save", function (next) {
+bikeSchema.pre("save", function () {
   if (this.isModified("name")) {
     this.slug = slugify(this.name, { lower: true, strict: true });
   }
-  next();
+});
+
+bikeSchema.pre("findOneAndUpdate", function () {
+  const update = this.getUpdate();
+  const name = update?.$set?.name ?? update?.name;
+
+  if (name && name.trim().length > 0) {
+    const slug = slugify(name, { lower: true, strict: true });
+    this.set({ slug });
+  }
 });
 
 module.exports = mongoose.model("Bike", bikeSchema);
