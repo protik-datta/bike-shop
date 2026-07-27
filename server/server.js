@@ -8,7 +8,12 @@ const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   try {
-    await redis.ping();
+    try {
+      await redis.ping();
+      logger.info("Connected to Redis successfully");
+    } catch (redisErr) {
+      logger.warn("Redis ping failed, continuing without cache:", redisErr.message);
+    }
 
     await connectDB();
 

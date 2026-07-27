@@ -1,5 +1,6 @@
 const cloudinary = require("../config/cloudinary.config");
 const streamifier = require("streamifier");
+const logger = require("../utils/logger");
 
 // Single Image Upload
 const uploadToCloudinary = (buffer, folder = "bikes") => {
@@ -32,7 +33,7 @@ const deleteFromCloudinary = async (publicId) => {
   try {
     await cloudinary.uploader.destroy(publicId);
   } catch (err) {
-    console.error(`[Cloudinary] Delete failed for "${publicId}":`, err.message);
+    logger.error(`[Cloudinary] Delete failed for "${publicId}":`, err.message);
   }
 };
 
@@ -42,10 +43,7 @@ const deleteMultipleFromCloudinary = async (publicIds = []) => {
   try {
     await cloudinary.api.delete_resources(publicIds);
   } catch (err) {
-    console.error(
-      "[Cloudinary] Failed to delete multiple assets:",
-      err.message,
-    );
+    logger.error("[Cloudinary] Failed to delete multiple assets:", err.message);
   }
 };
 

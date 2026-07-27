@@ -5,6 +5,7 @@ const { uploadBikeImages } = require("../middlewares/upload.middleware");
 const {
   createBikeSchema,
   updateBikeSchema,
+  bikeQuerySchema,
 } = require("../validation/bike.validation");
 
 // Create a new bike
@@ -16,7 +17,7 @@ router.post(
 );
 
 // Get all bikes
-router.get("/", bikeController.getBikes);
+router.get("/", validate(bikeQuerySchema, "query"), bikeController.getBikes);
 
 // Get a bike by Slug
 router.get("/:slug", bikeController.getBikeBySlug);

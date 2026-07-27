@@ -26,7 +26,7 @@ exports.createBike = asyncHandler(async (req, res, next) => {
     thumbnailUrl = thumbResult.secure_url;
     thumbnailPublicId = thumbResult.public_id;
   } else if (!req.body.thumbnail) {
-    return next(new AppError("Thumbnail image is required", 400));
+    return next(new AppError(400, "Thumbnail image is required"));
   }
 
   if (req.files && req.files.images && req.files.images.length > 0) {
@@ -46,15 +46,25 @@ exports.createBike = asyncHandler(async (req, res, next) => {
     imagesPublicIds: imagesPublicIds,
   };
 
-  const bike = await Bike.create(bikeData);
+  try {
+    const bike = await Bike.create(bikeData);
 
-  await invalidateCache("bikes:list:*");
+    await invalidateCache("bikes:*");
 
-  res.status(201).json({
-    success: true,
-    message: "Bike created successfully",
-    data: bike,
-  });
+    res.status(201).json({
+      success: true,
+      message: "Bike created successfully",
+      data: bike,
+    });
+  } catch (error) {
+    if (thumbnailPublicId) {
+      await deleteFromCloudinary(thumbnailPublicId);
+    }
+    if (imagesPublicIds.length > 0) {
+      await deleteMultipleFromCloudinary(imagesPublicIds);
+    }
+    throw error;
+  }
 });
 
 // GET ALL BIKES
@@ -186,7 +196,7 @@ exports.getBikeBySlug = asyncHandler(async (req, res, next) => {
     .lean();
 
   if (!bike) {
-    return next(new AppError("Bike not found", 404));
+    return next(new AppError(404, "Bike not found"));
   }
 
   await redis.set(cacheKey, JSON.stringify(bike), "EX", CACHE_TTL);
@@ -199,7 +209,7 @@ exports.updateBike = asyncHandler(async (req, res, next) => {
   const existingBike = await Bike.findById(req.params.id);
 
   if (!existingBike) {
-    return next(new AppError("Bike not found", 404));
+    return next(new AppError(404, "Bike not found"));
   }
 
   const updateData = { ...req.body };
@@ -210,6 +220,11 @@ exports.updateBike = asyncHandler(async (req, res, next) => {
       "bikes/thumbnails",
     );
     updateData.thumbnail = thumbResult.secure_url;
+    updateData.thumbnailPublicId = thumbResult.public_id;
+
+    if (existingBike.thumbnailPublicId) {
+      await deleteFromCloudinary(existingBike.thumbnailPublicId);
+    }
   }
 
   if (req.files && req.files.images && req.files.images.length > 0) {
@@ -255,7 +270,11 @@ exports.deleteBike = asyncHandler(async (req, res, next) => {
   ).lean();
 
   if (!bike) {
-    return next(new AppError("Bike not found", 404));
+    return next(new AppError(404, "Bike not found"));
+  }
+
+  if (bike.thumbnailPublicId) {
+    await deleteFromCloudinary(bike.thumbnailPublicId);
   }
 
   if (bike.imagesPublicIds && bike.imagesPublicIds.length > 0) {

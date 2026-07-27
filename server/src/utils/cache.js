@@ -1,4 +1,5 @@
 const redis = require("../config/redis.config");
+const logger = require("./logger");
 
 const CACHE_TTL = 60 * 60;
 
@@ -17,23 +18,17 @@ const invalidateCache = async (pattern) => {
       );
       cursor = nextCursor;
 
-      console.log(
-        `[SCAN] cursor=${cursor} pattern=${pattern} found=${keys.length}`,
-        keys,
-      );
-
       if (keys.length > 0) {
         const delCount = await redis.del(...keys);
         totalDeleted += delCount;
-        console.log(`[DEL] removed ${delCount} keys`);
       }
     } while (cursor !== "0");
 
-    console.log(
+    logger.info(
       `[invalidateCache] total deleted for "${pattern}": ${totalDeleted}`,
     );
   } catch (error) {
-    console.error(`Cache Invalidation Error for pattern [${pattern}]:`, error);
+    logger.error(`Cache Invalidation Error for pattern [${pattern}]:`, error);
   }
 };
 

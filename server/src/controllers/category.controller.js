@@ -1,4 +1,5 @@
 const Category = require("../model/category.model");
+const Bike = require("../model/bike.model");
 const redis = require("../config/redis.config");
 const asyncHandler = require("../utils/asyncHandler");
 const AppError = require("../utils/AppError");
@@ -16,19 +17,26 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 
   const result = await uploadToCloudinary(req.file.buffer, "categories");
 
-  const category = await Category.create({
-    ...req.body,
-    image: result.secure_url,
-    imagePublicId: result.public_id,
-  });
+  try {
+    const category = await Category.create({
+      ...req.body,
+      image: result.secure_url,
+      imagePublicId: result.public_id,
+    });
 
-  await invalidateCache("categories:*");
+    await invalidateCache("categories:*");
 
-  res.status(201).json({
-    success: true,
-    message: "Category created successfully",
-    data: category,
-  });
+    res.status(201).json({
+      success: true,
+      message: "Category created successfully",
+      data: category,
+    });
+  } catch (error) {
+    if (result && result.public_id) {
+      await deleteFromCloudinary(result.public_id);
+    }
+    throw error;
+  }
 });
 
 // GET ALL CATEGORIES
@@ -138,7 +146,7 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
     updateData.imagePublicId = result.public_id;
 
     if (existingCategory.imagePublicId) {
-      deleteFromCloudinary(existingCategory.imagePublicId);
+      await deleteFromCloudinary(existingCategory.imagePublicId);
     }
   }
 
@@ -164,15 +172,27 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 
 // DELETE CATEGORY (SOFT DELETE)
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
-  const category = await Category.findByIdAndUpdate(
-    req.params.id,
-    { isActive: false },
-    { new: true },
-  ).lean();
+  const category = await Category.findById(req.params.id).lean();
 
   if (!category) {
     return next(new AppError(404, "Category not found"));
   }
+
+  const activeBikeCount = await Bike.countDocuments({
+    category: category._id,
+    isActive: true,
+  });
+
+  if (activeBikeCount > 0) {
+    return next(
+      new AppError(
+        409,
+        `Cannot delete category "${category.name}" because it has ${activeBikeCount} active product(s) linked to it. Remove or reassign those products first.`,
+      ),
+    );
+  }
+
+  await Category.findByIdAndUpdate(req.params.id, { isActive: false });
 
   await invalidateCache("categories:*");
 
