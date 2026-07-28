@@ -178,16 +178,17 @@ exports.deleteCategory = asyncHandler(async (req, res, next) => {
     return next(new AppError(404, "Category not found"));
   }
 
-  const activeBikeCount = await Bike.countDocuments({
+  // Block deletion if ANY bike (active or inactive) is linked to this category.
+  // Inactive bikes still reference this category in DB — deleting it would orphan them.
+  const linkedBikeCount = await Bike.countDocuments({
     category: category._id,
-    isActive: true,
   });
 
-  if (activeBikeCount > 0) {
+  if (linkedBikeCount > 0) {
     return next(
       new AppError(
         409,
-        `Cannot delete category "${category.name}" because it has ${activeBikeCount} active product(s) linked to it. Remove or reassign those products first.`,
+        `Cannot delete category "${category.name}" because it has ${linkedBikeCount} product(s) linked to it. Remove or reassign those products first.`,
       ),
     );
   }

@@ -79,8 +79,8 @@ app.use("/api/v1/categories", categoryRoutes);
 const orderRoutes = require("./src/routes/order.routes");
 app.use("/api/v1/orders", orderRoutes);
 
-// 404 Catch-All Handler
-app.use("*", (req, res, next) => {
+// 404 Catch-All Handler — Express 5 requires named wildcard, bare "*" is invalid
+app.use("/{*path}", (req, res, next) => {
   next(new AppError(404, `Route ${req.originalUrl} not found`));
 });
 

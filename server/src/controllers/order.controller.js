@@ -27,13 +27,9 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
 
   const bikeMap = new Map(bikes.map((b) => [b._id.toString(), b]));
 
+  // Build verified items using server-side price/name/thumbnail (never trust client-supplied values)
   const verifiedItems = orderItems.map((item) => {
     const bike = bikeMap.get(item.bike);
-
-    if (bike.stock !== undefined && bike.stock < item.quantity) {
-      throw new AppError(409, `${bike.name} does not have enough stock`);
-    }
-
     return {
       bike: bike._id,
       name: bike.name,
@@ -43,16 +39,44 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
     };
   });
 
+  // Atomically decrement stock for each item.
+  // Using findOneAndUpdate with a stock filter ensures we never oversell —
+  // if stock is insufficient the update returns null and we abort.
+  const stockErrors = [];
+  const successfulDeductions = [];
+
+  for (const item of verifiedItems) {
+    const updated = await Bike.findOneAndUpdate(
+      { _id: item.bike, stock: { $gte: item.quantity } },
+      { $inc: { stock: -item.quantity } },
+      { new: true },
+    );
+
+    if (!updated) {
+      stockErrors.push(item.name);
+    } else {
+      successfulDeductions.push({ id: item.bike, quantity: item.quantity });
+    }
+  }
+
+  // If any item ran out of stock, roll back the deductions already made
+  if (stockErrors.length > 0) {
+    const rollbackPromises = successfulDeductions.map((d) =>
+      Bike.findByIdAndUpdate(d.id, { $inc: { stock: d.quantity } }),
+    );
+    await Promise.all(rollbackPromises);
+    return next(
+      new AppError(
+        409,
+        `Insufficient stock for: ${stockErrors.join(", ")}`,
+      ),
+    );
+  }
+
   const order = await Order.create({
     ...rest,
     orderItems: verifiedItems,
   });
-
-  // Deduct stock for each bike
-  const stockPromises = verifiedItems.map((item) =>
-    Bike.findByIdAndUpdate(item.bike, { $inc: { stock: -item.quantity } }),
-  );
-  await Promise.all(stockPromises);
 
   // Invalidate bikes cache so product listings show updated stock
   await invalidateCache("bikes:*");
@@ -84,7 +108,7 @@ exports.getOrders = asyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
 
   const [orders, total] = await Promise.all([
-    Order.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    Order.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
     Order.countDocuments(filter),
   ]);
 
@@ -205,13 +229,24 @@ exports.cancelOrder = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: order });
 });
 
-// DELETE ORDERS
+// DELETE ORDERS (hard delete — only for admin cleanup of old/test orders)
 exports.deleteOrder = asyncHandler(async (req, res, next) => {
-  const order = await Order.findByIdAndDelete(req.params.id);
+  const order = await Order.findById(req.params.id);
 
   if (!order) {
     return next(new AppError(404, "Order not found"));
   }
 
-  res.status(204).send();
+  // Restore stock if the order was NOT already cancelled
+  // (cancelled orders already had their stock restored)
+  if (order.orderStatus !== "cancelled") {
+    await restoreStockForOrder(order);
+  }
+
+  await Order.findByIdAndDelete(req.params.id);
+
+  res.status(200).json({
+    success: true,
+    message: "Order deleted successfully",
+  });
 });

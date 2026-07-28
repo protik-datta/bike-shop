@@ -31,15 +31,38 @@ const errorHandler = (err, req, res, next) => {
     message = `File upload error: ${err.message}`;
   }
 
-  logger.error(
-    `${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-  );
+  // Handle malformed JSON body (SyntaxError from body-parser)
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    statusCode = 400;
+    message = "Invalid JSON in request body";
+  }
 
-  res.status(statusCode).json({
+  // In production, don't leak internal details for non-operational errors
+  const isProduction = process.env.NODE_ENV === "production";
+  if (isProduction && !err.isOperational && statusCode === 500) {
+    message = "An unexpected error occurred. Please try again later.";
+  }
+
+  // Log 5xx as errors, 4xx as warnings
+  const logMsg = `${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`;
+  if (statusCode >= 500) {
+    logger.error(logMsg, { stack: err.stack });
+  } else {
+    logger.warn(logMsg);
+  }
+
+  const response = {
     success: false,
-    message: message,
-    stack: process.env.NODE_ENV === "production" ? null : err.stack,
-  });
+    message,
+  };
+
+  // Only include stack trace in non-production environments
+  if (!isProduction) {
+    response.stack = err.stack;
+  }
+
+  res.status(statusCode).json(response);
 };
 
 module.exports = errorHandler;
+

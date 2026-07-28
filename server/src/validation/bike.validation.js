@@ -45,12 +45,15 @@ const bikeQuerySchema = z.object({
   brand: z.string().optional(),
   category: z.string().optional(),
   search: z.string().optional(),
+  minPrice: z.coerce.number().nonnegative().optional(),
+  maxPrice: z.coerce.number().nonnegative().optional(),
   isFeatured: z.enum(["true", "false"]).optional(),
   isSale: z.enum(["true", "false"]).optional(),
   isNewArrival: z.enum(["true", "false"]).optional(),
   isTopSelling: z.enum(["true", "false"]).optional(),
   isHotDeal: z.enum(["true", "false"]).optional(),
   isPopular: z.enum(["true", "false"]).optional(),
+  isActive: z.enum(["true", "false"]).optional(),
 });
 
 module.exports = { createBikeSchema, updateBikeSchema, bikeQuerySchema };

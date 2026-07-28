@@ -4,10 +4,7 @@ const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid id format");
 
 const orderItemSchema = z.object({
   bike: objectId,
-  name: z.string().trim().min(1).max(200),
-  price: z.number().min(0),
-  quantity: z.number().int().min(1),
-  thumbnail: z.string().url(),
+  quantity: z.number().int().min(1, "Quantity must be at least 1"),
 });
 
 const bdPhone = z

@@ -20,6 +20,7 @@ const bikeSchema = new mongoose.Schema(
     emiDuration: { type: String },
     interestRate: { type: String },
     thumbnail: { type: String, required: true },
+    thumbnailPublicId: { type: String, default: "" },
     images: [{ type: String }],
     imagesPublicIds: [{ type: String }],
     description: { type: String, required: true },

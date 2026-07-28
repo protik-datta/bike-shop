@@ -104,7 +104,14 @@ exports.getBikes = asyncHandler(async (req, res) => {
     });
   }
 
-  const filter = { isActive: true };
+  const filter = {};
+
+  // Default to active-only for public. Admins can pass isActive=false to see hidden bikes.
+  if (req.query.isActive !== undefined) {
+    filter.isActive = req.query.isActive === "true";
+  } else {
+    filter.isActive = true;
+  }
 
   if (brand) filter.brand = brand;
 
@@ -247,7 +254,7 @@ exports.updateBike = asyncHandler(async (req, res, next) => {
     runValidators: true,
   }).lean();
 
-  await invalidateCache("bikes:list:*");
+  await invalidateCache("bikes:*");
 
   await redis.del(`bikes:single:${existingBike.slug}`);
   if (updatedBike.slug && updatedBike.slug !== existingBike.slug) {
@@ -261,27 +268,20 @@ exports.updateBike = asyncHandler(async (req, res, next) => {
   });
 });
 
-// DELETE BIKE
+// DELETE BIKE (SOFT DELETE)
 exports.deleteBike = asyncHandler(async (req, res, next) => {
-  const bike = await Bike.findByIdAndUpdate(
-    req.params.id,
-    { isActive: false },
-    { new: true },
-  ).lean();
+  const bike = await Bike.findById(req.params.id).lean();
 
   if (!bike) {
     return next(new AppError(404, "Bike not found"));
   }
 
-  if (bike.thumbnailPublicId) {
-    await deleteFromCloudinary(bike.thumbnailPublicId);
-  }
+  await Bike.findByIdAndUpdate(req.params.id, { isActive: false });
 
-  if (bike.imagesPublicIds && bike.imagesPublicIds.length > 0) {
-    await deleteMultipleFromCloudinary(bike.imagesPublicIds);
-  }
+  // Note: Cloudinary images are NOT deleted on soft-delete.
+  // The bike can still be restored. Images are only cleaned up on a hard delete.
 
-  await invalidateCache("bikes:list:*");
+  await invalidateCache("bikes:*");
   await redis.del(`bikes:single:${bike.slug}`);
 
   res.status(200).json({
