@@ -169,22 +169,22 @@ function cleanTransform(_doc, ret) {
 orderSchema.index({ createdAt: -1 });
 orderSchema.index({ phone: 1, createdAt: -1 });
 
-orderSchema.pre("validate", async function (next) {
-  if (!this.isNew) return next();
+orderSchema.pre("validate", async function () {
+  if (!this.isNew) return;
 
   const MAX_ATTEMPTS = 5;
   for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     const exists = await this.constructor.exists({
       orderNumber: this.orderNumber,
     });
-    if (!exists) return next();
+    if (!exists) return;
     this.orderNumber = generateOrderNumber();
   }
 
-  next(new Error("Failed to generate a unique order number, please retry"));
+  throw new Error("Failed to generate a unique order number, please retry");
 });
 
-orderSchema.pre("save", function (next) {
+orderSchema.pre("validate", function () {
   if (
     this.isModified("orderItems") ||
     this.isModified("deliveryFee") ||
@@ -204,14 +204,12 @@ orderSchema.pre("save", function (next) {
     ).toFixed(2);
 
     if (this.totalAmount < 0) {
-      return next(new Error("Discount cannot exceed subtotal + delivery fee"));
+      throw new Error("Discount cannot exceed subtotal + delivery fee");
     }
   }
-
-  next();
 });
 
-orderSchema.pre("save", function (next) {
+orderSchema.pre("save", function () {
   if (this.isModified("orderStatus")) {
     if (this.orderStatus === "cancelled" && !this.cancelledAt) {
       this.cancelledAt = new Date();
@@ -220,7 +218,6 @@ orderSchema.pre("save", function (next) {
       this.deliveredAt = new Date();
     }
   }
-  next();
 });
 
 orderSchema.methods.markAsPaid = function () {

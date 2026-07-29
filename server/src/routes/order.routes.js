@@ -10,6 +10,9 @@ const {
 } = require("../validation/order.validation");
 const controller = require("../controllers/order.controller");
 
+const multer = require("multer");
+const upload = multer();
+
 const router = express.Router();
 
 router.post("/", validate(createOrderSchema, "body"), controller.createOrder);
@@ -30,6 +33,7 @@ router.get(
 
 router.patch(
   "/:id/status",
+  upload.none(),
   [
     validate(orderIdParamSchema, "params"),
     validate(updateOrderStatusSchema, "body"),
@@ -39,6 +43,7 @@ router.patch(
 
 router.patch(
   "/:id/payment-status",
+  upload.none(),
   [
     validate(orderIdParamSchema, "params"),
     validate(updatePaymentStatusSchema, "body"),
@@ -48,6 +53,7 @@ router.patch(
 
 router.patch(
   "/:id/cancel",
+  upload.none(),
   validate(orderIdParamSchema, "params"),
   controller.cancelOrder,
 );
