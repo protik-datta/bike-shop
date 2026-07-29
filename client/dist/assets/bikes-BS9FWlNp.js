@@ -1,0 +1,1 @@
+import{t as e}from"./axiosInstance-CwBQ77SC.js";function t(t={}){return e.get(`/bikes`,{params:t})}function n(t){return e.get(`/bikes/${t}`)}export{n as fetchBikeBySlug,t as fetchBikes};

@@ -1,0 +1,1 @@
+import{t as e}from"./axiosInstance-CwBQ77SC.js";function t(t){return e.get(`/categories/${t}`)}export{t as fetchCategoryBySlug};
