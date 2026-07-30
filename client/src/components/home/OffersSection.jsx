@@ -22,7 +22,7 @@ export function OffersSection() {
               </div>
 
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display uppercase tracking-wider leading-none text-white">
-                FLAT <span className="text-[var(--color-accent)]">৳20,000 CASHBACK</span> ON ALL 300CC+ BIKES
+                FLAT <span className="text-[var(--color-accent)]">৳20,000 CASHBACK</span> ON ALL 150CC+ BIKES
               </h2>
 
               <p className="text-sm sm:text-base text-[var(--color-text-muted)] max-w-lg leading-relaxed">
@@ -32,7 +32,7 @@ export function OffersSection() {
               <div className="flex items-center gap-6 pt-2 font-mono text-xs text-[var(--color-gold)] font-bold uppercase">
                 <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4 text-[var(--color-accent)]" />
-                  <span>Use Code: REV20</span>
+                  <span>Use Code: NIM20</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[var(--color-accent)]" />
