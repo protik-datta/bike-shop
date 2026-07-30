@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@exortek/express-mongo-sanitize": "^3.0.0",
+    "axios": "^1.19.0",
+    "cheerio": "^1.2.0",
     "cloudinary": "^2.10.0",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
