@@ -107,8 +107,6 @@ export default function CheckoutPage() {
         totalAmount: summary.total,
       };
 
-      console.log("Submitting orderItems:", payload.orderItems);
-
       const createdOrder = await placeOrder(payload);
       clearCart();
       success(`Order placed successfully! Order #${createdOrder.orderNumber}`);

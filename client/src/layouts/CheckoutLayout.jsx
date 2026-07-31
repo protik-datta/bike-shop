@@ -16,10 +16,10 @@ export function CheckoutLayout() {
             className="flex items-center gap-2 text-2xl font-display uppercase tracking-wider text-[var(--color-text)]"
           >
             <span className="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center text-white font-black text-lg">
-              R
+              NIM
             </span>
             <span>
-              REV<span className="text-[var(--color-accent)]">MOTION</span>
+              NEW INFINITY <span className="text-[var(--color-accent)]">MOTORS</span>
             </span>
           </Link>
 
