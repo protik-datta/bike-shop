@@ -34,11 +34,9 @@ export default function ShopPage() {
   // Query parameters for hook
   const queryParams = {
     search: debouncedSearch || undefined,
-    brand: selectedBrand || undefined,
     category: selectedCategory || undefined,
     minPrice: minPrice ? Number(minPrice) : undefined,
     maxPrice: maxPrice ? Number(maxPrice) : undefined,
-    minCC: minCC ? Number(minCC) : undefined,
     page,
     limit: 12,
   };
@@ -49,30 +47,24 @@ export default function ShopPage() {
   useEffect(() => {
     const params = {};
     if (debouncedSearch) params.search = debouncedSearch;
-    if (selectedBrand) params.brand = selectedBrand;
     if (selectedCategory) params.category = selectedCategory;
     if (minPrice) params.minPrice = minPrice;
     if (maxPrice) params.maxPrice = maxPrice;
-    if (minCC) params.minCC = minCC;
     if (page > 1) params.page = page;
     setSearchParams(params, { replace: true });
-  }, [debouncedSearch, selectedBrand, selectedCategory, minPrice, maxPrice, minCC, page, setSearchParams]);
+  }, [debouncedSearch, selectedCategory, minPrice, maxPrice, page, setSearchParams]);
 
   const handleResetFilters = () => {
     setSearch("");
-    setBrand("");
     setCategory("");
     setMinPrice("");
     setMaxPrice("");
-    setMinCC("");
     setPage(1);
   };
 
   const activeFilterCount =
-    (selectedBrand ? 1 : 0) +
     (selectedCategory ? 1 : 0) +
     (minPrice || maxPrice ? 1 : 0) +
-    (minCC ? 1 : 0) +
     (search ? 1 : 0);
 
   return (
@@ -127,28 +119,6 @@ export default function ShopPage() {
               )}
             </div>
 
-            {/* Brand Filter */}
-            <div className="space-y-3">
-              <label className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                Brand
-              </label>
-              <select
-                value={selectedBrand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:border-[var(--color-accent)]"
-              >
-                <option value="">All Brands</option>
-                {BRANDS.map((b) => (
-                  <option key={b.id} value={b.name}>
-                    {b.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Category Filter */}
             <div className="space-y-3">
               <label className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
@@ -198,27 +168,6 @@ export default function ShopPage() {
                   className="w-full px-3 py-2 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-xs text-[var(--color-text)] font-mono focus:border-[var(--color-accent)]"
                 />
               </div>
-            </div>
-
-            {/* Displacement Filter */}
-            <div className="space-y-3">
-              <label className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                Min Engine Displacement
-              </label>
-              <select
-                value={minCC}
-                onChange={(e) => {
-                  setMinCC(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:border-[var(--color-accent)]"
-              >
-                <option value="">Any CC</option>
-                <option value="150">150cc+</option>
-                <option value="250">250cc+</option>
-                <option value="400">400cc+</option>
-                <option value="600">600cc+</option>
-              </select>
             </div>
           </aside>
 

@@ -1,6 +1,6 @@
 import { MOCK_CATEGORIES } from "@/data/categories";
 
-const USE_MOCK = true;
+const USE_MOCK = false;
 
 export async function getCategories() {
   if (USE_MOCK) return MOCK_CATEGORIES;

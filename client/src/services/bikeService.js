@@ -6,7 +6,7 @@
 import { MOCK_BIKES, filterMockBikes } from "@/data/bikes";
 import { PAGE_SIZE } from "@/constants/queryKeys";
 
-const USE_MOCK = true; // ← flip to false when backend is live
+const USE_MOCK = false; // ← flip to false when backend is live
 
 export async function getBikes(params = {}) {
   if (USE_MOCK) {

@@ -2,7 +2,7 @@ import * as ordersApi from "@/api/orders";
 import { lsGet, lsSet } from "@/utils/localStorage";
 import { LS_KEYS } from "@/constants/queryKeys";
 
-const USE_MOCK = true; // flip to false when backend is live
+const USE_MOCK = false; // flip to false when backend is live
 
 // ── localStorage order store (mock mode) ───────────────────────
 function readLocalOrders() {

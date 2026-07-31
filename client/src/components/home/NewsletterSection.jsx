@@ -30,7 +30,7 @@ export function NewsletterSection() {
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-display uppercase tracking-wider text-[var(--color-text)] mb-3">
-            JOIN THE REV<span className="text-[var(--color-accent)]">CLUB</span>
+            JOIN THE NEW INFINITY MOTORS <span className="text-[var(--color-accent)]">CLUB</span>
           </h2>
 
           <p className="text-sm text-[var(--color-text-muted)] max-w-md mx-auto mb-8 leading-relaxed">

@@ -3,7 +3,15 @@ import { Link } from "react-router-dom";
 import { Container } from "./Container";
 import { ROUTES } from "@/constants/routes";
 import { BRANDS } from "@/constants/brands";
-import { Phone, Mail, MapPin, ShieldCheck, Truck, Headphones } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  ShieldCheck,
+  Truck,
+  Headphones,
+} from "lucide-react";
+import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 
 export function Footer() {
   return (
@@ -16,8 +24,12 @@ export function Footer() {
               <Truck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[var(--color-text)]">Nationwide Delivery</h4>
-              <p className="text-xs text-[var(--color-text-muted)]">Insured transport to all 64 districts</p>
+              <h4 className="font-bold text-[var(--color-text)]">
+                Nationwide Delivery
+              </h4>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Insured transport to all 64 districts
+              </p>
             </div>
           </div>
 
@@ -26,8 +38,12 @@ export function Footer() {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[var(--color-text)]">Official Warranty</h4>
-              <p className="text-xs text-[var(--color-text-muted)]">Manufacturer backed warranty coverage</p>
+              <h4 className="font-bold text-[var(--color-text)]">
+                Official Warranty
+              </h4>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Manufacturer backed warranty coverage
+              </p>
             </div>
           </div>
 
@@ -36,8 +52,12 @@ export function Footer() {
               <Headphones className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-bold text-[var(--color-text)]">24/7 Rider Support</h4>
-              <p className="text-xs text-[var(--color-text-muted)]">Dedicated team ready to assist</p>
+              <h4 className="font-bold text-[var(--color-text)]">
+                24/7 Rider Support
+              </h4>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Dedicated team ready to assist
+              </p>
             </div>
           </div>
         </div>
@@ -53,47 +73,120 @@ export function Footer() {
               className="flex items-center gap-2 text-2xl font-display uppercase tracking-wider text-[var(--color-text)]"
             >
               <span className="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center text-white font-black text-lg">
-                R
+                NIM
               </span>
               <span>
-                REV<span className="text-[var(--color-accent)]">MOTION</span>
+                NEW INFINITY{" "}
+                <span className="text-[var(--color-accent)]">MOTORS</span>
               </span>
             </Link>
             <p className="text-xs text-[var(--color-text-muted)] leading-relaxed max-w-sm">
-              RevMotion is Bangladesh's premier motorcycle digital showroom. We bring world-class sportbikes, naked street fighters, adventure tourers, and classic cruisers directly to passionate riders.
+              New Infinity Motors BD is Bangladesh's premier motorcycle digital
+              showroom. We bring world-class sportbikes, naked street fighters,
+              adventure tourers, and classic cruisers directly to passionate
+              riders.
             </p>
             <div className="space-y-2 text-xs">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-[var(--color-accent)]" />
-                <span>Level 5, Velocity Tower, Tejgaon, Dhaka-1208</span>
+                <span>
+                  Port Connecting Road 10 No. Godawon Mongla Bondor, Khulna,
+                  Bangladesh
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[var(--color-accent)]" />
-                <span>+880 1700-000000 (Mon - Sat, 9am - 8pm)</span>
+                <span>01939279086 / 01744361242</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[var(--color-accent)]" />
-                <span>support@revmotion.com.bd</span>
+                <span>support@newinfinitymotors.com.bd</span>
+              </div>
+
+              {/* social links */}
+              <div className="flex items-center gap-2 mt-5">
+                <a
+                  href="https://www.facebook.com/share/p/1F8VKjKwAL/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
+                >
+                  <FaFacebook className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://wa.me/01744361242"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
+                >
+                  <FaWhatsapp className="w-4 h-4" />
+                </a>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-bold text-[var(--color-text)] text-base mb-4">Quick Links</h4>
+            <h4 className="font-bold text-[var(--color-text)] text-base mb-4">
+              Quick Links
+            </h4>
             <ul className="space-y-2.5 text-xs">
-              <li><Link to={ROUTES.SHOP} className="hover:text-[var(--color-accent)] transition-colors">All Bikes</Link></li>
-              <li><Link to={ROUTES.CATEGORIES} className="hover:text-[var(--color-accent)] transition-colors">Categories</Link></li>
-              <li><Link to={ROUTES.COMPARE} className="hover:text-[var(--color-accent)] transition-colors">Compare Bikes</Link></li>
-              <li><Link to={ROUTES.WISHLIST} className="hover:text-[var(--color-accent)] transition-colors">My Wishlist</Link></li>
-              <li><Link to={ROUTES.CART} className="hover:text-[var(--color-accent)] transition-colors">Shopping Cart</Link></li>
-              <li><Link to={ROUTES.ORDERS} className="hover:text-[var(--color-accent)] transition-colors">Order Tracking</Link></li>
+              <li>
+                <Link
+                  to={ROUTES.SHOP}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  All Bikes
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.CATEGORIES}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Categories
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.COMPARE}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Compare Bikes
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.WISHLIST}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  My Wishlist
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.CART}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Shopping Cart
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.ORDERS}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Order Tracking
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Brands */}
           <div>
-            <h4 className="font-bold text-[var(--color-text)] text-base mb-4">Top Brands</h4>
+            <h4 className="font-bold text-[var(--color-text)] text-base mb-4">
+              Top Brands
+            </h4>
             <ul className="space-y-2.5 text-xs">
               {BRANDS.slice(0, 6).map((b) => (
                 <li key={b.id}>
@@ -110,20 +203,60 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="font-bold text-[var(--color-text)] text-base mb-4">Company</h4>
+            <h4 className="font-bold text-[var(--color-text)] text-base mb-4">
+              Company
+            </h4>
             <ul className="space-y-2.5 text-xs">
-              <li><Link to={ROUTES.ABOUT} className="hover:text-[var(--color-accent)] transition-colors">About Us</Link></li>
-              <li><Link to={ROUTES.CONTACT} className="hover:text-[var(--color-accent)] transition-colors">Contact Us</Link></li>
-              <li><a href="#terms" className="hover:text-[var(--color-accent)] transition-colors">Terms of Service</a></li>
-              <li><a href="#privacy" className="hover:text-[var(--color-accent)] transition-colors">Privacy Policy</a></li>
-              <li><a href="#emi" className="hover:text-[var(--color-accent)] transition-colors">EMI Policy</a></li>
+              <li>
+                <Link
+                  to={ROUTES.ABOUT}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTES.CONTACT}
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="#terms"
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#privacy"
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#emi"
+                  className="hover:text-[var(--color-accent)] transition-colors"
+                >
+                  EMI Policy
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <p>© {new Date().getFullYear()} RevMotion Technologies Ltd. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} New Infinity Motors BD. All rights
+            reserved.
+          </p>
           <div className="flex items-center gap-4 text-[var(--color-text-faint)] font-mono text-[11px]">
             <span>Cash on Delivery</span>
             <span>•</span>

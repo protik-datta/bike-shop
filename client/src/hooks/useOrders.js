@@ -1,47 +1,75 @@
-import { useState, useEffect, useCallback } from "react";
-import { getOrders, getOrderById, trackOrder, cancelOrder } from "@/services/orderService";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getOrders,
+  getOrderById,
+  trackOrder,
+  cancelOrder,
+  placeOrder,
+} from "@/services/orderService";
+import { QUERY_KEYS } from "@/constants/queryKeys";
 
-export function useOrders(params = {}) {
-  const [data, setData]       = useState([]);
-  const [pagination, setPag]  = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+export function useOrders() {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: [QUERY_KEYS.ORDERS],
+    queryFn: getOrders,
+  });
 
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await getOrders(params);
-      setData(res.data ?? []);
-      setPag(res.pagination ?? null);
-    } catch (err) {
-      setError(err?.message ?? "Failed to load orders.");
-    } finally {
-      setLoading(false);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(params)]);
-
-  useEffect(() => { fetch(); }, [fetch]);
-
-  return { data, pagination, loading, error, refetch: fetch };
+  return {
+    data: data?.data ?? [],
+    pagination: data?.pagination ?? null,
+    loading: isLoading,
+    error: error?.message ?? null,
+    refetch,
+  };
 }
 
 export function useOrderDetail(id) {
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: [QUERY_KEYS.ORDER_DETAIL, id],
+    queryFn: () => getOrderById(id),
+    enabled: Boolean(id),
+  });
 
-  useEffect(() => {
-    if (!id) return;
-    let cancelled = false;
-    setLoading(true);
-    getOrderById(id)
-      .then((order) => { if (!cancelled) setData(order); })
-      .catch((err)  => { if (!cancelled) setError(err?.message ?? "Order not found."); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [id]);
+  return {
+    data: data ?? null,
+    loading: isLoading,
+    error: error?.message ?? null,
+  };
+}
 
-  return { data, loading, error };
+/** Places an order, then refreshes the local order-history list so the
+ * new order shows up on the Orders page without a manual refetch. */
+export function usePlaceOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: placeOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ORDERS] });
+    },
+  });
+}
+
+/** Cancels an order, then refreshes both the detail view and the list. */
+export function useCancelOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id) => cancelOrder(id),
+    onSuccess: (order) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ORDERS] });
+      queryClient.setQueryData(
+        [QUERY_KEYS.ORDER_DETAIL, order.id || order._id],
+        order,
+      );
+    },
+  });
+}
+
+/** One-off lookup by order number + phone — not cached, since it's a
+ * user-triggered search rather than data this page "owns". */
+export function useTrackOrder() {
+  return useMutation({
+    mutationFn: ({ orderNumber, phone }) => trackOrder(orderNumber, phone),
+  });
 }

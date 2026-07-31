@@ -16,13 +16,9 @@ const AppError = require("./src/utils/AppError");
 const app = express();
 
 // cors
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(",").map((url) => url.trim())
-  : "*";
-
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: "http://localhost:5173",
     credentials: true,
   }),
 );

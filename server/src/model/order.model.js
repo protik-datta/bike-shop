@@ -42,6 +42,19 @@ const ORDER_NUMBER_REGEX = /^[A-Z]{2}\d{6}$/;
 const BD_PHONE_REGEX = /^(?:\+?880|0)1[3-9]\d{8}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Keep this list in sync with frontend's DIVISIONS constant
+// (src/constants/checkout.js).
+const BD_DIVISIONS = [
+  "Dhaka",
+  "Chattogram",
+  "Rajshahi",
+  "Khulna",
+  "Barishal",
+  "Sylhet",
+  "Rangpur",
+  "Mymensingh",
+];
+
 function generateOrderNumber() {
   const letters = String.fromCharCode(
     65 + Math.floor(Math.random() * 26),
@@ -66,6 +79,21 @@ const orderSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
+      trim: true,
+      maxlength: 100,
+    },
+    division: {
+      type: String,
+      required: [true, "Division is required"],
+      trim: true,
+      enum: {
+        values: BD_DIVISIONS,
+        message: "{VALUE} is not a valid division",
+      },
+    },
+    district: {
+      type: String,
+      required: [true, "District is required"],
       trim: true,
       maxlength: 100,
     },
@@ -168,6 +196,7 @@ function cleanTransform(_doc, ret) {
 
 orderSchema.index({ createdAt: -1 });
 orderSchema.index({ phone: 1, createdAt: -1 });
+orderSchema.index({ division: 1, district: 1 });
 
 orderSchema.pre("validate", async function () {
   if (!this.isNew) return;

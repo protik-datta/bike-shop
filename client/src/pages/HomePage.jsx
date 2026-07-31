@@ -18,11 +18,8 @@ export default function HomePage() {
       <TopBrands />
       <FeaturedBikes />
       <CategoriesSection />
-      <TrendingBikes />
-      <OffersSection />
       <LatestArrivals />
       <ServicesSection />
-      <BestSellers />
       <TestimonialsSection />
       <NewsletterSection />
     </div>

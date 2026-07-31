@@ -12,8 +12,26 @@ const bdPhone = z
   .trim()
   .regex(/^(?:\+?880|0)1[3-9]\d{8}$/, "Enter a valid Bangladeshi phone number");
 
+// Keep this list in sync with the Mongoose Order model's BD_DIVISIONS enum
+// and the frontend's DIVISIONS constant.
+const BD_DIVISIONS = [
+  "Dhaka",
+  "Chattogram",
+  "Rajshahi",
+  "Khulna",
+  "Barishal",
+  "Sylhet",
+  "Rangpur",
+  "Mymensingh",
+];
+
 const createOrderSchema = z.object({
   firstName: z.string().trim().min(1).max(100),
+  division: z.enum(BD_DIVISIONS, {
+    required_error: "Division is required",
+    invalid_type_error: "Invalid division",
+  }),
+  district: z.string().trim().min(1, "District is required").max(100),
   streetAddress: z.string().trim().min(1).max(500),
   phone: bdPhone,
   email: z
@@ -54,6 +72,8 @@ const listOrdersQuerySchema = z.object({
   paymentStatus: z.enum(["pending", "paid", "failed"]).optional(),
   phone: z.string().trim().optional(),
   search: z.string().trim().optional(),
+  division: z.enum(BD_DIVISIONS).optional(),
+  district: z.string().trim().optional(),
 });
 
 const orderIdParamSchema = z.object({

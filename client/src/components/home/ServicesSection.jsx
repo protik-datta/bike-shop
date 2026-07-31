@@ -43,7 +43,7 @@ export function ServicesSection() {
       <Container>
         <SectionTitle
           subtitle="End-To-End Convenience"
-          title="The RevMotion Ecosystem"
+          title="The Ecosystem"
           description="We handle every detail from showroom selection to registration, servicing, and door delivery."
           centered
         />

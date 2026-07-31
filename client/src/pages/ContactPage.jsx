@@ -45,24 +45,31 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-[var(--color-accent)] shrink-0 mt-0.5" />
                   <div>
-                    <strong className="text-[var(--color-text)] block">Dhaka Showroom & HQ</strong>
-                    Level 5, Velocity Tower, Tejgaon I/A, Dhaka-1208, Bangladesh
+                    <strong className="text-[var(--color-text)] block">
+                      Showroom & HQ
+                    </strong>
+                    Port Connecting Road 10 No. Godawon Mongla Bondor, Khulna,
+                    Bangladesh
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-[var(--color-accent)] shrink-0" />
                   <div>
-                    <strong className="text-[var(--color-text)] block">Helpline</strong>
-                    +880 1700-000000 / +880 1900-000000
+                    <strong className="text-[var(--color-text)] block">
+                      Helpline
+                    </strong>
+                    01939279086 / 01744361242
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-[var(--color-accent)] shrink-0" />
                   <div>
-                    <strong className="text-[var(--color-text)] block">Email Support</strong>
-                    support@revmotion.com.bd
+                    <strong className="text-[var(--color-text)] block">
+                      Email Support
+                    </strong>
+                    support@newinfinitymotors.com.bd
                   </div>
                 </div>
               </div>
@@ -80,7 +87,8 @@ export default function ContactPage() {
                   Thank You for Reaching Out!
                 </h3>
                 <p className="text-xs text-[var(--color-text-muted)] max-w-sm mx-auto">
-                  Your message has been assigned to our senior customer advisor. We will respond within 2 business hours.
+                  Your message has been assigned to our senior customer advisor.
+                  We will respond within 2 business hours.
                 </p>
                 <Button variant="secondary" onClick={() => setSubmitted(false)}>
                   Send Another Message
@@ -100,10 +108,14 @@ export default function ContactPage() {
                     <input
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
                       placeholder="e.g. Tanvir Ahmed"
                       className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:outline-none ${
-                        errors.name ? "border-rose-500" : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
+                        errors.name
+                          ? "border-rose-500"
+                          : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
                       }`}
                     />
                   </div>
@@ -115,10 +127,14 @@ export default function ContactPage() {
                     <input
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
                       placeholder="tanvir@example.com"
                       className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:outline-none ${
-                        errors.email ? "border-rose-500" : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
+                        errors.email
+                          ? "border-rose-500"
+                          : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
                       }`}
                     />
                   </div>
@@ -131,7 +147,9 @@ export default function ContactPage() {
                   <input
                     type="text"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
                     placeholder="01700000000"
                     className="w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-sm text-[var(--color-text)] font-mono focus:border-[var(--color-accent)] focus:outline-none"
                   />
@@ -144,10 +162,14 @@ export default function ContactPage() {
                   <textarea
                     rows={4}
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
                     placeholder="Ask about EMI, delivery times, or spec details..."
                     className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:outline-none ${
-                      errors.message ? "border-rose-500" : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
+                      errors.message
+                        ? "border-rose-500"
+                        : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
                     }`}
                   />
                 </div>

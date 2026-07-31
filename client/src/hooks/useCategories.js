@@ -1,39 +1,31 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getCategories, getCategoryBySlug } from "@/services/categoryService";
+import { QUERY_KEYS } from "@/constants/queryKeys";
 
 export function useCategories() {
-  const [data, setData]       = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: [QUERY_KEYS.CATEGORIES],
+    queryFn: getCategories,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    getCategories()
-      .then((cats) => { if (!cancelled) setData(cats); })
-      .catch((err) => { if (!cancelled) setError(err?.message ?? "Failed to load categories."); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, []);
-
-  return { data, loading, error };
+  return {
+    data: data ?? [],
+    loading: isLoading,
+    error: error?.message ?? null,
+  };
 }
 
 export function useCategoryDetail(slug) {
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const { data, isLoading, error } = useQuery({
+    queryKey: [QUERY_KEYS.CATEGORY_DETAIL, slug],
+    queryFn: () => getCategoryBySlug(slug),
+    enabled: Boolean(slug),
+  });
 
-  useEffect(() => {
-    if (!slug) return;
-    let cancelled = false;
-    setLoading(true);
-    getCategoryBySlug(slug)
-      .then((cat) => { if (!cancelled) setData(cat); })
-      .catch((err) => { if (!cancelled) setError(err?.message ?? "Category not found."); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [slug]);
-
-  return { data, loading, error };
+  return {
+    data: data ?? null,
+    loading: isLoading,
+    error: error?.message ?? null,
+  };
 }

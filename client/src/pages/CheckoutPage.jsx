@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Truck, CreditCard, CheckCircle2, Lock } from "lucide-react";
+import { ShieldCheck, Lock } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/Button";
-import { Price } from "@/components/ui/Price";
 import { useCartStore } from "@/store/cartStore";
 import { useToastStore } from "@/store/toastStore";
 import { placeOrder } from "@/services/orderService";
 import { validateCheckoutForm } from "@/utils/validators";
-import { DIVISIONS, DISTRICTS_BY_DIVISION, PAYMENT_METHODS } from "@/constants/checkout";
+import {
+  DIVISIONS,
+  DISTRICTS_BY_DIVISION,
+  PAYMENT_METHODS,
+} from "@/constants/checkout";
 import { formatPrice } from "@/utils/formatters";
 import { buildRoute, ROUTES } from "@/constants/routes";
+
+// Backend limits — keep in sync with models/Order.js
+const FIELD_LIMITS = {
+  firstName: 100,
+  streetAddress: 500,
+  notes: 1000,
+};
+
+// Strip spaces, dashes, parentheses so "017 000-00000" / "+880 1700 000000"
+// still passes the backend's BD_PHONE_REGEX (which has no tolerance for them).
+const normalizePhone = (value) => value.replace(/[\s\-()]/g, "");
 
 export default function CheckoutPage() {
   const { items, summary, clearCart, discountAmount } = useCartStore();
@@ -23,7 +37,7 @@ export default function CheckoutPage() {
     phone: "",
     email: "",
     division: "Dhaka",
-    district: "Dhaka",
+    district: DISTRICTS_BY_DIVISION["Dhaka"]?.[0] || "",
     notes: "",
   });
 
@@ -36,9 +50,16 @@ export default function CheckoutPage() {
   const handleChange = (field, val) => {
     setFormData((prev) => {
       const updated = { ...prev, [field]: val };
+
       if (field === "division") {
-        updated.district = DISTRICTS_BY_DIVISION[val]?.[0] || "";
+        const nextDistricts = DISTRICTS_BY_DIVISION[val] || [];
+        updated.district = nextDistricts[0] || "";
       }
+
+      if (field === "phone") {
+        updated.phone = normalizePhone(val);
+      }
+
       return updated;
     });
     if (errors[field]) {
@@ -48,6 +69,12 @@ export default function CheckoutPage() {
 
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
+
+    if (!formData.district) {
+      setErrors((prev) => ({ ...prev, district: "Please select a district" }));
+      toastError("Please select a district.");
+      return;
+    }
 
     const validation = validateCheckoutForm(formData);
     if (!validation.isValid) {
@@ -60,13 +87,15 @@ export default function CheckoutPage() {
 
     try {
       const payload = {
-        firstName: formData.firstName,
-        streetAddress: `${formData.streetAddress}, ${formData.district}, ${formData.division}`,
-        phone: formData.phone,
-        email: formData.email || undefined,
-        notes: formData.notes || undefined,
+        firstName: formData.firstName.trim(),
+        division: formData.division,
+        district: formData.district,
+        streetAddress: formData.streetAddress.trim(),
+        phone: normalizePhone(formData.phone),
+        email: formData.email.trim() || undefined,
+        notes: formData.notes.trim() || undefined,
         orderItems: items.map((i) => ({
-          bike: i._id,
+          bike: i._id || i.id,
           name: i.name,
           price: i.offerPrice ?? i.price,
           quantity: i.quantity,
@@ -78,10 +107,16 @@ export default function CheckoutPage() {
         totalAmount: summary.total,
       };
 
+      console.log("Submitting orderItems:", payload.orderItems);
+
       const createdOrder = await placeOrder(payload);
       clearCart();
       success(`Order placed successfully! Order #${createdOrder.orderNumber}`);
-      navigate(buildRoute(ROUTES.ORDER_DETAIL, { id: createdOrder.id || createdOrder._id }));
+      navigate(
+        buildRoute(ROUTES.ORDER_DETAIL, {
+          id: createdOrder.id || createdOrder._id,
+        }),
+      );
     } catch (err) {
       toastError(err?.message || "Failed to place order. Please try again.");
     } finally {
@@ -110,11 +145,15 @@ export default function CheckoutPage() {
             Checkout & Shipping
           </h1>
           <p className="text-xs text-[var(--color-text-muted)]">
-            Complete your shipping address and confirm your Cash on Delivery order.
+            Complete your shipping address and confirm your Cash on Delivery
+            order.
           </p>
         </div>
 
-        <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <form
+          onSubmit={handleSubmitOrder}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start"
+        >
           {/* Shipping Form */}
           <div className="lg:col-span-2 space-y-6">
             <div className="p-6 rounded-2xl bg-[var(--color-bg-card)] border border-[var(--color-border-subtle)] space-y-4">
@@ -131,6 +170,7 @@ export default function CheckoutPage() {
                   type="text"
                   value={formData.firstName}
                   onChange={(e) => handleChange("firstName", e.target.value)}
+                  maxLength={FIELD_LIMITS.firstName}
                   placeholder="e.g. Rafiqul Islam"
                   className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:outline-none ${
                     errors.firstName
@@ -139,7 +179,9 @@ export default function CheckoutPage() {
                   }`}
                 />
                 {errors.firstName && (
-                  <span className="text-[11px] text-rose-400">{errors.firstName}</span>
+                  <span className="text-[11px] text-rose-400">
+                    {errors.firstName}
+                  </span>
                 )}
               </div>
 
@@ -151,6 +193,7 @@ export default function CheckoutPage() {
                   </label>
                   <input
                     type="text"
+                    inputMode="numeric"
                     value={formData.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
                     placeholder="e.g. 01700000000"
@@ -161,7 +204,9 @@ export default function CheckoutPage() {
                     }`}
                   />
                   {errors.phone && (
-                    <span className="text-[11px] text-rose-400">{errors.phone}</span>
+                    <span className="text-[11px] text-rose-400">
+                      {errors.phone}
+                    </span>
                   )}
                 </div>
 
@@ -174,8 +219,17 @@ export default function CheckoutPage() {
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
                     placeholder="e.g. rafiq@example.com"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none"
+                    className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:outline-none ${
+                      errors.email
+                        ? "border-rose-500"
+                        : "border-[var(--color-border)] focus:border-[var(--color-accent)]"
+                    }`}
                   />
+                  {errors.email && (
+                    <span className="text-[11px] text-rose-400">
+                      {errors.email}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -205,14 +259,28 @@ export default function CheckoutPage() {
                   <select
                     value={formData.district}
                     onChange={(e) => handleChange("district", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:border-[var(--color-accent)]"
+                    disabled={districts.length === 0}
+                    className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] ${
+                      errors.district
+                        ? "border-rose-500"
+                        : "border-[var(--color-border)]"
+                    }`}
                   >
-                    {districts.map((dis) => (
-                      <option key={dis} value={dis}>
-                        {dis}
-                      </option>
-                    ))}
+                    {districts.length === 0 ? (
+                      <option value="">No districts available</option>
+                    ) : (
+                      districts.map((dis) => (
+                        <option key={dis} value={dis}>
+                          {dis}
+                        </option>
+                      ))
+                    )}
                   </select>
+                  {errors.district && (
+                    <span className="text-[11px] text-rose-400">
+                      {errors.district}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -224,7 +292,10 @@ export default function CheckoutPage() {
                 <textarea
                   rows={3}
                   value={formData.streetAddress}
-                  onChange={(e) => handleChange("streetAddress", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("streetAddress", e.target.value)
+                  }
+                  maxLength={FIELD_LIMITS.streetAddress}
                   placeholder="House number, road number, area landmarks..."
                   className={`w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border text-sm text-[var(--color-text)] focus:outline-none ${
                     errors.streetAddress
@@ -233,7 +304,9 @@ export default function CheckoutPage() {
                   }`}
                 />
                 {errors.streetAddress && (
-                  <span className="text-[11px] text-rose-400">{errors.streetAddress}</span>
+                  <span className="text-[11px] text-rose-400">
+                    {errors.streetAddress}
+                  </span>
                 )}
               </div>
 
@@ -246,6 +319,7 @@ export default function CheckoutPage() {
                   type="text"
                   value={formData.notes}
                   onChange={(e) => handleChange("notes", e.target.value)}
+                  maxLength={FIELD_LIMITS.notes}
                   placeholder="Special instructions for delivery truck driver..."
                   className="w-full px-4 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border)] text-sm text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-none"
                 />
@@ -309,7 +383,10 @@ export default function CheckoutPage() {
             {/* Items list */}
             <div className="space-y-3 max-h-60 overflow-y-auto pr-1 no-scrollbar">
               {items.map((item) => (
-                <div key={item._id} className="flex items-center justify-between text-xs">
+                <div
+                  key={item._id}
+                  className="flex items-center justify-between text-xs"
+                >
                   <div className="flex items-center gap-2 truncate pr-2">
                     <span className="font-bold font-mono text-[var(--color-accent)]">
                       {item.quantity}x
@@ -319,7 +396,9 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <span className="font-mono text-[var(--color-text-muted)] shrink-0 font-semibold">
-                    {formatPrice((item.offerPrice ?? item.price) * item.quantity)}
+                    {formatPrice(
+                      (item.offerPrice ?? item.price) * item.quantity,
+                    )}
                   </span>
                 </div>
               ))}
@@ -337,14 +416,18 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-[var(--color-text-muted)]">
                 <span>Delivery Charge</span>
                 <span className="font-mono text-[var(--color-text)] font-semibold">
-                  {summary.delivery === 0 ? "FREE" : formatPrice(summary.delivery)}
+                  {summary.delivery === 0
+                    ? "FREE"
+                    : formatPrice(summary.delivery)}
                 </span>
               </div>
 
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-400 font-semibold">
                   <span>Discount</span>
-                  <span className="font-mono">-{formatPrice(discountAmount)}</span>
+                  <span className="font-mono">
+                    -{formatPrice(discountAmount)}
+                  </span>
                 </div>
               )}
 
