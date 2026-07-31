@@ -15,10 +15,11 @@ const AppError = require("./src/utils/AppError");
 
 const app = express();
 
-// cors
+// cors origin configuration
 app.use(
   cors({
-    origin: "*" || process.env.CLIENT_URL,
+    origin: true,
+    credentials: true,
   }),
 );
 
