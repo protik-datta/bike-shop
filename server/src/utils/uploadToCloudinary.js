@@ -1,6 +1,6 @@
 const cloudinary = require("../config/cloudinary.config");
 const streamifier = require("streamifier");
-const logger = require("../utils/logger");
+const logger = require("./logger");
 
 // Single Image Upload
 const uploadToCloudinary = (buffer, folder = "bikes") => {
