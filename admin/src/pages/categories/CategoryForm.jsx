@@ -37,7 +37,7 @@ export default function CategoryForm({ category, onDone }) {
 
     try {
       if (isEdit) {
-        await updateCategory.mutateAsync({ id: category.id, values: payload });
+        await updateCategory.mutateAsync({ id: category._id, values: payload });
         toast.success("Category updated");
       } else {
         await createCategory.mutateAsync(payload);

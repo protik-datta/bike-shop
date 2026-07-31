@@ -17,7 +17,7 @@ export default function Sidebar() {
         </div>
         <div>
           <p className="font-display text-sm font-semibold leading-tight text-ink-100">
-            Velocity Motors
+            New Infinity Motors BD
           </p>
           <p className="text-[11px] leading-tight text-ink-500">Admin console</p>
         </div>

@@ -71,7 +71,7 @@ export default function BikeForm({ bike, onDone }) {
 
     try {
       if (isEdit) {
-        await updateBike.mutateAsync({ id: bike.id, values: payload });
+        await updateBike.mutateAsync({ id: bike._id, values: payload });
         toast.success("Bike updated");
       } else {
         await createBike.mutateAsync(payload);
@@ -100,7 +100,7 @@ export default function BikeForm({ bike, onDone }) {
               Select a category
             </option>
             {categories.data?.data?.map((cat) => (
-              <option key={cat.id} value={cat.id}>
+              <option key={cat._id} value={cat._id}>
                 {cat.name}
               </option>
             ))}

@@ -37,7 +37,7 @@ export default function CategoriesList() {
   const handleDelete = async () => {
     setDeleteError("");
     try {
-      await deleteCategory.mutateAsync(deletingCategory.id);
+      await deleteCategory.mutateAsync(deletingCategory._id);
       toast.success("Category removed");
       setDeletingCategory(null);
     } catch (err) {
@@ -65,7 +65,7 @@ export default function CategoriesList() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {categories.data.data.map((category) => (
                 <div
-                  key={category.id}
+                  key={category._id}
                   className="overflow-hidden rounded-2xl border border-ink-700 bg-ink-900"
                 >
                   <img

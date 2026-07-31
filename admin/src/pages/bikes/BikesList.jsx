@@ -37,7 +37,7 @@ export default function BikesList() {
 
   const handleDelete = async () => {
     try {
-      await deleteBike.mutateAsync(deletingBike.id);
+      await deleteBike.mutateAsync(deletingBike._id);
       toast.success("Bike removed");
       setDeletingBike(null);
     } catch (err) {
@@ -91,7 +91,7 @@ export default function BikesList() {
                 </thead>
                 <tbody className="divide-y divide-ink-800">
                   {bikes.data.data.map((bike) => (
-                    <tr key={bike.id} className="hover:bg-ink-800/40">
+                    <tr key={bike._id} className="hover:bg-ink-800/40">
                       <td className="flex items-center gap-3 px-5 py-3">
                         <img
                           src={bike.thumbnail}
