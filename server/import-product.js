@@ -29,8 +29,7 @@ const Bike = require("./src/model/bike.model");
 const Category = require("./src/model/category.model");
 
 // <-- EDIT 3: your real MongoDB connection string
-const MONGODB_URI =
-  "mongodb+srv://protikdatta135_db_user:aiMtRfTvNI7ybZVU@bdbike.jzsigki.mongodb.net/?appName=bdbike";
+const MONGODB_URI =process.env.MONGODB_URI || "mongodb://localhost:27017/bike-shop";
 
 const SOURCE_SITE = "https://newinfinitymotorsbd.com";
 
