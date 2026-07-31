@@ -18,7 +18,7 @@ const app = express();
 // cors
 app.use(
   cors({
-    origin: "*",
+    origin: "*" || process.env.CLIENT_URL,
   }),
 );
 
