@@ -58,24 +58,27 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      className={`relative transition-all duration-300 ${
         scrolled
           ? "bg-[var(--color-bg)]/90 backdrop-blur-md border-b border-[var(--color-border-subtle)] shadow-xl py-3"
           : "bg-gradient-to-b from-black/80 to-transparent py-5"
       }`}
     >
       <Container>
-        <div className="flex items-center justify-between gap-4">
-          {/* Logo */}
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
+          {/* Logo — responsive: badge only on phones, short label at sm, full name from md up */}
           <Link
             to={ROUTES.HOME}
-            className="flex items-center gap-2 text-2xl sm:text-3xl font-display uppercase tracking-wider text-[var(--color-text)]"
+            className="flex items-center gap-2 shrink-0 font-display uppercase tracking-wider text-[var(--color-text)]"
           >
-            <span className="w-8 h-8 rounded-lg bg-[var(--color-accent)] flex items-center justify-center text-white font-black text-xl shadow-lg shadow-[rgba(255,77,0,0.4)]">
+            <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--color-accent)] flex items-center justify-center text-white font-black text-sm sm:text-xl shadow-lg shadow-[rgba(255,77,0,0.4)] shrink-0">
               NIM
             </span>
-            <span>
-              NEW<span className="text-[var(--color-accent)]"> INIFITY MOTORS</span>
+            <span className="sm:inline text-xl md:text-3xl whitespace-nowrap">
+              <span className="md:inline">NEW </span>
+              <span className="text-[var(--color-accent)]">
+                INFINITY MOTORS
+              </span>
             </span>
           </Link>
 
@@ -99,11 +102,11 @@ export function Navbar() {
           </nav>
 
           {/* Action Icons */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
             {/* Search Trigger */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)]"
+              className="p-1.5 sm:p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)]"
               aria-label="Search"
             >
               <Search className="w-5 h-5" />
@@ -112,7 +115,7 @@ export function Navbar() {
             {/* Compare Badge */}
             <Link
               to={ROUTES.COMPARE}
-              className="relative p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)] hidden sm:flex"
+              className="relative p-1.5 sm:p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)] hidden sm:flex"
               aria-label="Compare Bikes"
             >
               <GitCompare className="w-5 h-5" />
@@ -126,7 +129,7 @@ export function Navbar() {
             {/* Wishlist Badge */}
             <Link
               to={ROUTES.WISHLIST}
-              className="relative p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)]"
+              className="relative p-1.5 sm:p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)]"
               aria-label="Wishlist"
             >
               <Heart className="w-5 h-5" />
@@ -140,7 +143,7 @@ export function Navbar() {
             {/* Cart Drawer Trigger */}
             <button
               onClick={openCartDrawer}
-              className="relative p-2 text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)]"
+              className="relative p-1.5 sm:p-2 text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors rounded-full hover:bg-[var(--color-bg-subtle)]"
               aria-label="Cart"
             >
               <ShoppingBag className="w-5 h-5" />
@@ -160,13 +163,13 @@ export function Navbar() {
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={toggleMobileMenu}
-              className="p-2 text-[var(--color-text)] lg:hidden rounded-lg hover:bg-[var(--color-bg-subtle)]"
+              className="p-1.5 sm:p-2 text-[var(--color-text)] lg:hidden rounded-lg hover:bg-[var(--color-bg-subtle)]"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               )}
             </button>
           </div>
@@ -187,7 +190,7 @@ export function Navbar() {
 
       {/* Mobile Overlay Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-x-0 top-[65px] bg-[var(--color-bg-card)] border-b border-[var(--color-border)] p-6 shadow-2xl lg:hidden animate-fadeIn">
+        <div className="absolute inset-x-0 top-full bg-[var(--color-bg-card)] border-b border-[var(--color-border)] p-6 shadow-2xl lg:hidden animate-fadeIn">
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <NavLink

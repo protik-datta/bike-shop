@@ -41,8 +41,8 @@ exports.createCategory = asyncHandler(async (req, res, next) => {
 
 // GET ALL CATEGORIES
 exports.getCategories = asyncHandler(async (req, res) => {
-  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-  const limit = Math.max(1, parseInt(req.query.limit, 10) || 10);
+  const page = Math.max(1, parseInt(req.query.page, 14) || 14);
+  const limit = Math.max(1, parseInt(req.query.limit, 14) || 14);
   const { search, isActive } = req.query;
 
   const sortedQuery = Object.keys(req.query)

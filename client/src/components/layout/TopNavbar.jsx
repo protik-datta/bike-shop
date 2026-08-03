@@ -5,6 +5,14 @@ import { Phone, MapPin } from "lucide-react";
 import { FaFacebookF, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { Container } from "./Container";
 
+/**
+ * Slim utility bar shown above the main Navbar at every breakpoint.
+ * Stacks with <Navbar /> inside <SiteHeader />, which is what actually
+ * gets pinned to the viewport. Kept to one row everywhere:
+ *  - below sm: just the helpline number (nothing else fits cleanly)
+ *  - sm+: social icons + Contact/Location + full "Helpline:" label
+ *  - lg+: the full street address too
+ */
 export function TopNavbar() {
   return (
     <div className="block bg-[var(--color-bg)] text-[var(--color-text-muted)] border-b border-[var(--color-border-subtle)] text-[10px] sm:text-xs font-semibold uppercase tracking-wider">

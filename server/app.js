@@ -41,7 +41,7 @@ app.use(cookieParser());
 // rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.RATE_LIMIT_MAX ? parseInt(process.env.RATE_LIMIT_MAX, 10) : 500,
+  max: process.env.RATE_LIMIT_MAX ? parseInt(process.env.RATE_LIMIT_MAX, 14) : 500,
   message: {
     success: false,
     message: "Too many requests from this IP, please try again after 15 minutes",
