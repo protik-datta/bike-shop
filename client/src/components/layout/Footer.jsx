@@ -12,8 +12,71 @@ import {
   Headphones,
 } from "lucide-react";
 import { FaWhatsapp, FaFacebook } from "react-icons/fa";
+import delivery1 from "../../../public/pathao.webp";
+import delivery2 from "../../../public/redx.png";
+import delivery3 from "../../../public/fedex.jpg";
+import delivery4 from "../../../public/sundarban.png";
+import delivery5 from "../../../public/panda.png";
+import payment1 from "../../../public/bkash.jpeg";
+import payment2 from "../../../public/nagad.png";
+import payment3 from "../../../public/rocket.png";
+import payment4 from "../../../public/dbbl.jpg";
+import payment5 from "../../../public/visa.jpg";
+import payment6 from "../../../public/mastercard.webp";
 
 export function Footer() {
+  // Payment methods list
+  const paymentMethods = [
+    {
+      name: "bKash",
+      logo: payment1,
+    },
+    {
+      name: "Nagad",
+      logo: payment2,
+    },
+    {
+      name: "Rocket",
+      logo: payment3,
+    },
+    {
+      name: "DBBL Nexus",
+      logo: payment4,
+    },
+    {
+      name: "VISA",
+      logo: payment5,
+    },
+    {
+      name: "MasterCard",
+      logo: payment6,
+    },
+  ];
+
+  // Shipping methods list
+  const shippingMethods = [
+    {
+      name: "Pathao",
+      logo: delivery1,
+    },
+    {
+      name: "REDX",
+      logo: delivery2,
+    },
+    {
+      name: "FedEx",
+      logo: delivery3,
+    },
+    {
+      name: "Sundarban",
+      logo: delivery4,
+    },
+    {
+      name: "Foodpanda",
+      logo: delivery5,
+    },
+  ];
+
   return (
     <footer className="bg-[var(--color-bg-elevated)] border-t border-[var(--color-border)] pt-16 pb-12 text-[var(--color-text-muted)] text-sm">
       {/* Guarantees bar */}
@@ -114,7 +177,7 @@ export function Footer() {
                   <FaFacebook className="w-4 h-4" />
                 </a>
                 <a
-                  href="https://wa.me/01744361242"
+                  href="https://wa.me/8801744361242"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
@@ -248,6 +311,69 @@ export function Footer() {
                 </a>
               </li>
             </ul>
+          </div>
+        </div>
+
+        {/* Payment & Shipping Systems Section */}
+        <div className="py-8 border-b border-[var(--color-border-subtle)] space-y-6">
+          <h3 className="text-lg font-bold text-[var(--color-text)] relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-red-600">
+            Payment Links
+          </h3>
+
+          <div className="space-y-4">
+            {/* Payment Systems */}
+            <div>
+              <h4 className="text-xs font-semibold text-[var(--color-text)] mb-3">
+                Payment System:
+              </h4>
+              <div className="flex flex-wrap items-center">
+                {paymentMethods.map((pm, index) => (
+                  <div
+                    key={index}
+                    className="h-17 px-2 flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
+                  >
+                    <img
+                      src={pm.logo}
+                      alt={pm.name}
+                      className="h-13 max-w-[120px] object-cover rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        if (e.currentTarget.parentElement) {
+                          e.currentTarget.parentElement.innerText = pm.name;
+                        }
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Shipping Systems */}
+            <div>
+              <h4 className="text-xs font-semibold text-[var(--color-text)] mb-3">
+                Shipping System:
+              </h4>
+              <div className="flex flex-wrap items-center">
+                {shippingMethods.map((sm, index) => (
+                  <div
+                    key={index}
+                    className="h-17 px-3 flex items-center justify-center shadow-sm hover:scale-105 transition-transform"
+                  >
+                    <img
+                      src={sm.logo}
+                      alt={sm.name}
+                      className="h-13 max-w-[100px] object-contain rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        if (e.currentTarget.parentElement) {
+                          e.currentTarget.parentElement.innerText = sm.name;
+                        }
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

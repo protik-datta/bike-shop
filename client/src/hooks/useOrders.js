@@ -66,8 +66,6 @@ export function useCancelOrder() {
   });
 }
 
-/** One-off lookup by order number + phone — not cached, since it's a
- * user-triggered search rather than data this page "owns". */
 export function useTrackOrder() {
   return useMutation({
     mutationFn: ({ orderNumber, phone }) => trackOrder(orderNumber, phone),
