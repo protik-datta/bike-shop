@@ -159,7 +159,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[var(--color-accent)]" />
-                <span>01939279086 / 01744361242</span>
+                <span>+8801939279086 / +8801744361242</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[var(--color-accent)]" />
@@ -169,7 +169,7 @@ export function Footer() {
               {/* social links */}
               <div className="flex items-center gap-2 mt-5">
                 <a
-                  href="https://www.facebook.com/share/p/1F8VKjKwAL/"
+                  href="https://www.facebook.com/people/%E0%A6%A8%E0%A6%BF%E0%A6%89-%E0%A6%87%E0%A6%A8%E0%A6%AB%E0%A6%BF%E0%A6%A8%E0%A6%BF%E0%A6%9F%E0%A6%BF-%E0%A6%AE%E0%A7%8B%E0%A6%9F%E0%A6%B0%E0%A6%B8-%E0%A6%AC%E0%A6%BF%E0%A6%A1%E0%A6%BF/61569149687553/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"

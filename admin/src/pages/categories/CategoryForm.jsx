@@ -54,10 +54,10 @@ export default function CategoryForm({ category, onDone }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Field label="Name" required>
-        <Input required value={values.name} onChange={set("name")} />
+        <Input required minLength={2} value={values.name} onChange={set("name")} />
       </Field>
       <Field label="Description" required>
-        <TextArea required value={values.description} onChange={set("description")} />
+        <TextArea required minLength={2} value={values.description} onChange={set("description")} />
       </Field>
       <ImageDropzone
         label="Image"

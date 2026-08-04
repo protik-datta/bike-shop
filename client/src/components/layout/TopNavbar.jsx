@@ -5,14 +5,6 @@ import { Phone, MapPin } from "lucide-react";
 import { FaFacebookF, FaYoutube, FaWhatsapp } from "react-icons/fa";
 import { Container } from "./Container";
 
-/**
- * Slim utility bar shown above the main Navbar at every breakpoint.
- * Stacks with <Navbar /> inside <SiteHeader />, which is what actually
- * gets pinned to the viewport. Kept to one row everywhere:
- *  - below sm: just the helpline number (nothing else fits cleanly)
- *  - sm+: social icons + Contact/Location + full "Helpline:" label
- *  - lg+: the full street address too
- */
 export function TopNavbar() {
   return (
     <div className="block bg-[var(--color-bg)] text-[var(--color-text-muted)] border-b border-[var(--color-border-subtle)] text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
@@ -21,7 +13,7 @@ export function TopNavbar() {
           {/* Left: Social Icons — from sm up */}
           <div className="flex gap-2 sm:flex items-center lg:gap-4 h-full pr-3 lg:pr-4 border-r border-[var(--color-border-subtle)]">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/people/%E0%A6%A8%E0%A6%BF%E0%A6%89-%E0%A6%87%E0%A6%A8%E0%A6%AB%E0%A6%BF%E0%A6%A8%E0%A6%BF%E0%A6%9F%E0%A6%BF-%E0%A6%AE%E0%A7%8B%E0%A6%9F%E0%A6%B0%E0%A6%B8-%E0%A6%AC%E0%A6%BF%E0%A6%A1%E0%A6%BF/61569149687553/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[var(--color-accent)] transition-colors"
@@ -80,11 +72,18 @@ export function TopNavbar() {
           <div className="flex items-center gap-1.5 sm:gap-2 h-full w-full sm:w-auto justify-center sm:justify-start sm:pl-4 sm:border-l sm:border-[var(--color-border-subtle)] whitespace-nowrap">
             <Phone className="w-3.5 h-3.5 text-[var(--color-accent)] flex-shrink-0" />
             <a
-              href="tel:+8809638585389"
+              href="tel:+8801939279086"
               className="hover:text-[var(--color-accent)] transition-colors font-bold"
             >
               <span className="hidden sm:inline">Helpline: </span>
-              +8809638585389
+              +8801939279086
+            </a>
+            <span>/</span>
+            <a
+              href="tel:+8801744361242"
+              className="hover:text-[var(--color-accent)] transition-colors font-bold"
+            >
+              +8801744361242
             </a>
           </div>
         </div>

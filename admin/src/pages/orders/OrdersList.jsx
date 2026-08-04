@@ -40,15 +40,15 @@ export default function OrdersList() {
   // payment mutations (which invalidate this query) are reflected instantly
   // in the open modal instead of showing a stale snapshot.
   const selectedOrder =
-    orders.data?.data?.find((o) => o.id === selectedOrderId) || null;
+    orders.data?.data?.find((o) => o._id === selectedOrderId) || null;
 
   // Deep-link support: /orders?open=<id> opens that order once loaded.
   useEffect(() => {
     const openId = searchParams.get("open");
     if (!openId || !orders.data?.data) return;
-    const match = orders.data.data.find((o) => o.id === openId);
+    const match = orders.data.data.find((o) => o._id === openId);
     if (match) {
-      setSelectedOrderId(match.id);
+      setSelectedOrderId(match._id);
       searchParams.delete("open");
       setSearchParams(searchParams, { replace: true });
     }
@@ -108,54 +108,56 @@ export default function OrdersList() {
             <Spinner />
           ) : orders.data?.data?.length ? (
             <>
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-ink-800 text-xs text-ink-400">
-                    <th className="px-5 py-3 font-medium">Order</th>
-                    <th className="px-5 py-3 font-medium">Customer</th>
-                    <th className="px-5 py-3 font-medium">Total</th>
-                    <th className="px-5 py-3 font-medium">Status</th>
-                    <th className="px-5 py-3 font-medium">Payment</th>
-                    <th className="px-5 py-3 font-medium">Placed</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-ink-800">
-                  {orders.data.data.map((order) => (
-                    <tr
-                      key={order._id}
-                      onClick={() => setSelectedOrderId(order._id)}
-                      className="cursor-pointer hover:bg-ink-800/40"
-                    >
-                      <td className="px-5 py-3 font-mono text-xs text-ink-300">
-                        {order.orderNumber}
-                      </td>
-                      <td className="px-5 py-3 text-ink-100">
-                        {order.firstName}
-                      </td>
-                      <td className="px-5 py-3 text-ink-300">
-                        ৳{order.totalAmount?.toLocaleString()}
-                      </td>
-                      <td className="px-5 py-3">
-                        <Badge
-                          className={ORDER_STATUS_STYLES[order.orderStatus]}
-                        >
-                          {order.orderStatus}
-                        </Badge>
-                      </td>
-                      <td className="px-5 py-3">
-                        <Badge
-                          className={PAYMENT_STATUS_STYLES[order.paymentStatus]}
-                        >
-                          {order.paymentStatus}
-                        </Badge>
-                      </td>
-                      <td className="px-5 py-3 text-ink-400">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[720px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-ink-800 text-xs text-ink-400">
+                      <th className="px-5 py-3 font-medium">Order</th>
+                      <th className="px-5 py-3 font-medium">Customer</th>
+                      <th className="px-5 py-3 font-medium">Total</th>
+                      <th className="px-5 py-3 font-medium">Status</th>
+                      <th className="px-5 py-3 font-medium">Payment</th>
+                      <th className="px-5 py-3 font-medium">Placed</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-ink-800">
+                    {orders.data.data.map((order) => (
+                      <tr
+                        key={order._id}
+                        onClick={() => setSelectedOrderId(order._id)}
+                        className="cursor-pointer hover:bg-ink-800/40"
+                      >
+                        <td className="px-5 py-3 font-mono text-xs text-ink-300">
+                          {order.orderNumber}
+                        </td>
+                        <td className="px-5 py-3 text-ink-100">
+                          {order.firstName}
+                        </td>
+                        <td className="px-5 py-3 text-ink-300">
+                          ৳{order.totalAmount?.toLocaleString()}
+                        </td>
+                        <td className="px-5 py-3">
+                          <Badge
+                            className={ORDER_STATUS_STYLES[order.orderStatus]}
+                          >
+                            {order.orderStatus}
+                          </Badge>
+                        </td>
+                        <td className="px-5 py-3">
+                          <Badge
+                            className={PAYMENT_STATUS_STYLES[order.paymentStatus]}
+                          >
+                            {order.paymentStatus}
+                          </Badge>
+                        </td>
+                        <td className="px-5 py-3 text-ink-400">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <Pagination
                 page={orders.data.pagination.page}
                 totalPages={orders.data.pagination.totalPages}

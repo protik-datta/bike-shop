@@ -77,78 +77,80 @@ export default function BikesList() {
             <Spinner />
           ) : bikes.data?.data?.length ? (
             <>
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-ink-800 text-xs text-ink-400">
-                    <th className="px-5 py-3 font-medium">Bike</th>
-                    <th className="px-5 py-3 font-medium">Brand</th>
-                    <th className="px-5 py-3 font-medium">Category</th>
-                    <th className="px-5 py-3 font-medium">Price</th>
-                    <th className="px-5 py-3 font-medium">Stock</th>
-                    <th className="px-5 py-3 font-medium">Flags</th>
-                    <th className="px-5 py-3" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-ink-800">
-                  {bikes.data.data.map((bike) => (
-                    <tr key={bike._id} className="hover:bg-ink-800/40">
-                      <td className="flex items-center gap-3 px-5 py-3">
-                        <img
-                          src={bike.thumbnail}
-                          alt=""
-                          className="h-10 w-10 rounded-lg object-cover"
-                        />
-                        <span className="font-medium text-ink-100">{bike.name}</span>
-                      </td>
-                      <td className="px-5 py-3 text-ink-300">{bike.brand}</td>
-                      <td className="px-5 py-3 text-ink-300">
-                        {bike.category?.name || "—"}
-                      </td>
-                      <td className="px-5 py-3 text-ink-300">
-                        ৳{bike.price?.toLocaleString()}
-                        {bike.offerPrice ? (
-                          <span className="ml-1.5 text-xs text-ember-400">
-                            → ৳{bike.offerPrice.toLocaleString()}
-                          </span>
-                        ) : null}
-                      </td>
-                      <td className="px-5 py-3 text-ink-300">{bike.stock}</td>
-                      <td className="px-5 py-3">
-                        <div className="flex flex-wrap gap-1">
-                          {bike.isFeatured && (
-                            <Badge className="border-ember-500/30 bg-ember-500/10 text-ember-300">
-                              Featured
-                            </Badge>
-                          )}
-                          {bike.isSale && (
-                            <Badge className="border-rose-500/30 bg-rose-500/10 text-rose-300">
-                              Sale
-                            </Badge>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-5 py-3">
-                        <div className="flex justify-end gap-1">
-                          <button
-                            onClick={() => openEdit(bike)}
-                            className="focus-ring rounded-md p-1.5 text-ink-400 hover:bg-ink-800 hover:text-ink-100"
-                            aria-label="Edit"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          <button
-                            onClick={() => setDeletingBike(bike)}
-                            className="focus-ring rounded-md p-1.5 text-ink-400 hover:bg-rose-500/10 hover:text-rose-300"
-                            aria-label="Delete"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[720px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-ink-800 text-xs text-ink-400">
+                      <th className="px-5 py-3 font-medium">Bike</th>
+                      <th className="px-5 py-3 font-medium">Brand</th>
+                      <th className="px-5 py-3 font-medium">Category</th>
+                      <th className="px-5 py-3 font-medium">Price</th>
+                      <th className="px-5 py-3 font-medium">Stock</th>
+                      <th className="px-5 py-3 font-medium">Flags</th>
+                      <th className="px-5 py-3" />
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-ink-800">
+                    {bikes.data.data.map((bike) => (
+                      <tr key={bike._id} className="hover:bg-ink-800/40">
+                        <td className="flex items-center gap-3 px-5 py-3">
+                          <img
+                            src={bike.thumbnail}
+                            alt=""
+                            className="h-10 w-10 shrink-0 rounded-lg object-cover"
+                          />
+                          <span className="font-medium text-ink-100">{bike.name}</span>
+                        </td>
+                        <td className="px-5 py-3 text-ink-300">{bike.brand}</td>
+                        <td className="px-5 py-3 text-ink-300">
+                          {bike.category?.name || "—"}
+                        </td>
+                        <td className="px-5 py-3 text-ink-300">
+                          ৳{bike.price?.toLocaleString()}
+                          {bike.offerPrice ? (
+                            <span className="ml-1.5 text-xs text-ember-400">
+                              → ৳{bike.offerPrice.toLocaleString()}
+                            </span>
+                          ) : null}
+                        </td>
+                        <td className="px-5 py-3 text-ink-300">{bike.stock}</td>
+                        <td className="px-5 py-3">
+                          <div className="flex flex-wrap gap-1">
+                            {bike.isFeatured && (
+                              <Badge className="border-ember-500/30 bg-ember-500/10 text-ember-300">
+                                Featured
+                              </Badge>
+                            )}
+                            {bike.isSale && (
+                              <Badge className="border-rose-500/30 bg-rose-500/10 text-rose-300">
+                                Sale
+                              </Badge>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex justify-end gap-1">
+                            <button
+                              onClick={() => openEdit(bike)}
+                              className="focus-ring rounded-md p-1.5 text-ink-400 hover:bg-ink-800 hover:text-ink-100"
+                              aria-label="Edit"
+                            >
+                              <Pencil size={14} />
+                            </button>
+                            <button
+                              onClick={() => setDeletingBike(bike)}
+                              className="focus-ring rounded-md p-1.5 text-ink-400 hover:bg-rose-500/10 hover:text-rose-300"
+                              aria-label="Delete"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <Pagination
                 page={bikes.data.pagination.page}
                 totalPages={bikes.data.pagination.totalPages}

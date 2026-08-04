@@ -89,7 +89,7 @@ export default function BikeForm({ bike, onDone }) {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Name" required>
-          <Input required value={values.name} onChange={set("name")} />
+          <Input required minLength={2} value={values.name} onChange={set("name")} />
         </Field>
         <Field label="Brand" required>
           <Input required value={values.brand} onChange={set("brand")} />
@@ -144,8 +144,8 @@ export default function BikeForm({ bike, onDone }) {
         </Field>
       </div>
 
-      <Field label="Description" required>
-        <TextArea required value={values.description} onChange={set("description")} />
+      <Field label="Description" required hint="At least 10 characters">
+        <TextArea required minLength={10} value={values.description} onChange={set("description")} />
       </Field>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

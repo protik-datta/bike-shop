@@ -18,7 +18,7 @@ export default function CategoriesList() {
   const [deletingCategory, setDeletingCategory] = useState(null);
   const [deleteError, setDeleteError] = useState("");
 
-  const categories = useCategories({ page, limit: 12, isActive: "true" });
+  const categories = useCategories({ page, limit: 20, isActive: "true" });
   const deleteCategory = useDeleteCategory();
 
   const openCreate = () => {
